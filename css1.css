@@ -1,0 +1,141 @@
+/* CSS Document */
+
+body {
+	color : #000000;
+	font-family : Arial, Verdana, Arial, Helvetica, sans-serif;
+	font-size : 0.96em;
+	background-color: #2F0000;
+	background-image: ;
+}
+p {
+	color : #000000;
+	font-family : Arial, Helvetica, sans-serif;
+	font-size : 0.96em;
+	text-align : left;
+	background-color: #DCE6E7;
+}
+table, td, th, tr, tbody {
+	color : #000000;
+	font-family : Arial, Helvetica, sans-serif;
+	font-size : 0.97em;
+	padding : .5em;
+	background-color: #DCE6E7;
+}
+a:link {
+color : #003366;
+text-decoration : none;
+}
+a:visited {
+text-decoration : none;
+color : #993366;
+}
+a:hover {
+text-decoration : underline;
+color : #0099CC;
+}
+a:active {
+text-decoration : none;
+color : #003366;
+}
+#menu {
+padding : 0;
+margin : 0;
+margin-left : 200px;
+}
+#menu li {
+display : inline;
+list-style-type : none;
+}
+#menu a, #menu a:visited {
+display : inline;
+width : 9em;
+}
+#menu a {
+padding : 3px 10px;
+}
+#menu a:link, #menu a:visited {
+color : #fff;
+background-color : #003366;
+text-decoration : none;
+}
+#menu a:hover {
+color : #fff;
+
+text-decoration : none;
+}
+
+	
+#menu li a:hover{
+	background-color: #660000;
+}
+#menu li a:focus{
+	background-color: #660000;
+}
+#menu li a:active{
+	background-color: #660000;
+}
+#menu li a.selected {
+	background-color: Maroon;
+} 
+
+
+
+h1, h2, h3 {
+font-family : "Times New Roman", Times, serif;
+color : #000033;
+}
+
+#navlist li a.selected {
+background-color: #FFFFFF;
+}
+#navcontainer {
+	
+	padding : 0px;
+	height : 20px;
+	margin-left: 0px;
+	margin-right: 10px;
+}
+#navcontainer ul {
+margin : 1px 1px 0px 1px;
+list-style-type : none;
+text-align : center;
+}
+#navcontainer ul li {
+display : inline;
+
+padding : 1px;
+margin-left: 1px;
+}
+#navcontainer ul li a {
+	width : 78px;
+	height : 20px;
+	border-right: 2px solid #000000;
+	padding : 2px;
+	margin-left :;
+	color : #003366;
+	text-decoration : none;
+	text-align : center;
+	font-family: Arial, lucida, sans-serif;
+	font-size: 12px;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+}
+#navcontainer ul li a:hover {
+	color : #003366;
+	background-color: #FFFFFF;
+}
+#navcontainer a:active {
+color : #fff;
+}
+#navcontainer li a:active a {
+background : #c60;
+border : 0 solid;
+}
+#footer {
+color : #ffffff;
+font-size:12px;
+padding : 0.6em;
+text-align : center;
+
+}
