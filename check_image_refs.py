@@ -3,11 +3,11 @@
 #
 
 from html.parser import HTMLParser
-from os import listdir
+from os import listdir, walk
 from os.path import isfile, join
 
+# List of image references from the html pages
 list_of_img_refs = []
-
 
 def get_img_ref_from_attrs(attrs):
     """ the attributes of an html tag come in a list.  We want
@@ -43,7 +43,7 @@ class CowHTMLParser(HTMLParser):
         pass
 
 
-def get_images_from_dir(dirname, type=None):
+def get_files_from_dir(dirname, type=None):
     """ This gets all the files in a directory, and optionally limits to
         a particular type of file """
     images = [filename for filename in listdir(dirname) if isfile(join(dirname, filename))]
@@ -55,15 +55,14 @@ def get_images_from_dir(dirname, type=None):
 
 
 # Get all the html files.
-htmlfiles = get_images_from_dir(".", "html")
+htmlfiles = get_files_from_dir(".", "html")
+print( "HTML Files: ")
 print( htmlfiles )
+print()
 
 
-# Got through all the html files
+# Go through all the html files
 for filename in htmlfiles:
-
-    # clear out the list of images
-    list_of_img_refs = []
 
     # Go through the file and get the list of images
     file = open(filename, "r")
@@ -73,23 +72,32 @@ for filename in htmlfiles:
         parser.feed(line)
         line = file.readline()
     file.close()
-    print(list_of_img_refs)
 
-    # Get the list of images in the directory
-    basename = (filename.split("."))[0]
-    print(basename)
-    imagesjpg = get_images_from_dir(basename, "jpg")
-    imagesjpg.extend(get_images_from_dir(basename, "JPG"))
-    if (imagesjpg is not None):
-        imagesjpg = [str(basename) + "/" + str(filename) for filename in imagesjpg]
-    print(imagesjpg)
+# Turn the list into a set, which will remove all repeats
+refSet = set(list_of_img_refs)
+print(" All image refences from HTML files: ")
+print(refSet)
+print()
 
-    # Compare them.
-    refSet = set(list_of_img_refs)
-    refSet = refSet.difference(imagesjpg)
-    print(" Images in the html that are NOT in the image directory: " + str(refSet))
+# Go through all the images in all the directories
+images = []
+for root, dirs, files in walk("."):
+   for name in files:
+       fullname = join(root,name)[2:]
+       # print("file " + join(root, name) + "   " + fullname)
+       if (fullname.endswith("jpg") or fullname.endswith("JPG") or fullname.endswith("gif") or fullname.endswith("png") ):
+           images.append(fullname)
 
-    imgSet = set(imagesjpg)
-    imgSet = imgSet.difference(list_of_img_refs)
-    print(" Images in the image directory that are NOT in the html: " + str(imgSet))
+imageSet = set(images)
+print(" All image from all directories : ")
+print(imageSet)
+print()
 
+# Compare them.
+refSetCopy = set(refSet)
+refSetCopy = refSetCopy.difference(imageSet)
+print(" Images in the html that are NOT in the image directory: " + str(refSetCopy))
+
+imgSetCopy = set(imageSet)
+imgSetCopy = imgSetCopy.difference(refSet)
+print(" Images in the image directory that are NOT in the html: " + str(imgSetCopy))
