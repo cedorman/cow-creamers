@@ -9,6 +9,22 @@ from os.path import isfile, join
 # List of image references from the html pages
 list_of_img_refs = []
 
+def isImage(imgref):
+    """ Determine if a string is an image, which in our case means that
+    it ends with jpg, JPG, png, or gif """
+    if (imgref.endswith("JPG")):
+        return True
+    if (imgref.endswith("jpg")):
+        return True
+    if (imgref.endswith("gif")):
+        return True
+    if (imgref.endswith("png")):
+        return True
+    return False
+
+
+
+
 def get_img_ref_from_attrs(attrs):
     """ the attributes of an html tag come in a list.  We want
         either the src or the href. For example, a tag may be:
@@ -22,10 +38,12 @@ def get_img_ref_from_attrs(attrs):
 
     for attr in attrs:
         if attr[0]== 'src':
-            list_of_img_refs.append(attr[1])
+            if isImage(attr[1]):
+                list_of_img_refs.append(attr[1])
 
         if attr[0] == 'href':
-            list_of_img_refs.append(attr[1])
+            if isImage(attr[1]):
+                list_of_img_refs.append(attr[1])
 
 
 class CowHTMLParser(HTMLParser):
@@ -34,6 +52,9 @@ class CowHTMLParser(HTMLParser):
 
     def handle_starttag(self, tag, attrs):
         if tag.startswith("img"):
+            get_img_ref_from_attrs(attrs)
+
+        if tag.startswith("a"):
             get_img_ref_from_attrs(attrs)
 
     def handle_endtag(self, tag):
@@ -75,7 +96,7 @@ for filename in htmlfiles:
 
 # Turn the list into a set, which will remove all repeats
 refSet = set(list_of_img_refs)
-print(" All image refences from HTML files: ")
+print(" All image refences from HTML files: "+ str(len(refSet)))
 print(refSet)
 print()
 
@@ -85,19 +106,23 @@ for root, dirs, files in walk("."):
    for name in files:
        fullname = join(root,name)[2:]
        # print("file " + join(root, name) + "   " + fullname)
-       if (fullname.endswith("jpg") or fullname.endswith("JPG") or fullname.endswith("gif") or fullname.endswith("png") ):
+       if isImage(fullname):
            images.append(fullname)
 
 imageSet = set(images)
-print(" All image from all directories : ")
+print(" All image from all directories : " + str(len(imageSet)))
 print(imageSet)
 print()
 
 # Compare them.
 refSetCopy = set(refSet)
 refSetCopy = refSetCopy.difference(imageSet)
-print(" Images in the html that are NOT in the image directory: " + str(refSetCopy))
+print(" Images in the html that are NOT in the image directory: " + str(len(refSetCopy)))
+print(str(refSetCopy))
+print()
 
 imgSetCopy = set(imageSet)
 imgSetCopy = imgSetCopy.difference(refSet)
-print(" Images in the image directory that are NOT in the html: " + str(imgSetCopy))
+print(" Images in the image directory that are NOT in the html: " + str(len(imgSetCopy)))
+print(str(imgSetCopy))
+print()
