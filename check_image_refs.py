@@ -77,9 +77,9 @@ def get_files_from_dir(dirname, type=None):
 
 # Get all the html files.
 htmlfiles = get_files_from_dir(".", "html")
-print( "HTML Files: ")
-print( htmlfiles )
-print()
+# print( "HTML Files: ")
+# print( htmlfiles )
+# print()
 
 
 # Go through all the html files
@@ -96,9 +96,9 @@ for filename in htmlfiles:
 
 # Turn the list into a set, which will remove all repeats
 refSet = set(list_of_img_refs)
-print(" All image refences from HTML files: "+ str(len(refSet)))
-print(refSet)
-print()
+# print(" All image refences from HTML files: "+ str(len(refSet)))
+# print(refSet)
+# print()
 
 # Go through all the images in all the directories
 images = []
@@ -110,9 +110,9 @@ for root, dirs, files in walk("."):
            images.append(fullname)
 
 imageSet = set(images)
-print(" All image from all directories : " + str(len(imageSet)))
-print(imageSet)
-print()
+# print(" All image from all directories : " + str(len(imageSet)))
+# print(imageSet)
+# print()
 
 # Compare them.
 refSetCopy = set(refSet)
