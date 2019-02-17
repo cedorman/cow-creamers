@@ -35,9 +35,12 @@ table {
 
 .maintable {
 	width: 756px; 
-	cellpadding: 0;
 	align: "center";
-	cellspacing: 1;
+}
+
+.imagetable { 
+	width: 97%;
+	padding: 0px;
 }
 
 a:link {
