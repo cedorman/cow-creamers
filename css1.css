@@ -116,6 +116,7 @@ h2,
 h3 {
 	font-family: "Times New Roman", Times, serif;
 	color: #000033;
+	text-align:left
 }
 
 #navlist li a.selected {
