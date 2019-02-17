@@ -119,6 +119,14 @@ h3 {
 	text-align:left
 }
 
+img.titleimage
+{
+	display: block;
+    margin-left: auto;
+	margin-right: auto;
+
+}
+
 #navlist li a.selected {
 	background-color: #FFFFFF;
 }
