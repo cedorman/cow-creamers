@@ -46,6 +46,10 @@ div.lefted {
 	text-align: left;
 }
 
+div.righted {
+	text-align: right;
+}
+
 .imagetable {
 	width: 98%;
 	padding: 0px;
