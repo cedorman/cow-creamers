@@ -34,11 +34,19 @@ table {
 }
 
 .maintable {
-	width: 756px; 
+	width: 756px;
 	align: "center";
 }
 
-.imagetable { 
+div.centered {
+	text-align: center;
+}
+
+div.lefted {
+	text-align: left;
+}
+
+.imagetable {
 	width: 98%;
 	padding: 0px;
 }
@@ -119,17 +127,16 @@ h2,
 h3 {
 	font-family: "Times New Roman", Times, serif;
 	color: #000033;
-	text-align:left
+	text-align: left
 }
 
 img {
 	border: 1px solid #888888;
 }
 
-img.titleimage
-{
+img.titleimage {
 	display: block;
-    margin-left: auto;
+	margin-left: auto;
 	margin-right: auto;
 	border: 0px;
 
@@ -140,7 +147,6 @@ img.titleimage
 }
 
 #navcontainer {
-
 	padding: 0px;
 	height: 20px;
 	margin-left: 0px;
@@ -165,7 +171,6 @@ img.titleimage
 	height: 20px;
 	border-right: 2px solid #000000;
 	padding: 2px;
-	margin-left: ;
 	color: #003366;
 	text-decoration: none;
 	text-align: center;
