@@ -117,9 +117,9 @@ imageSet = set(images)
 # Compare them.
 imgSetCopy = set(imageSet)
 imgSetCopy = imgSetCopy.difference(refSet)
-print(" Images in the image directory that are NOT in the html: " + str(len(imgSetCopy)))
-print(str(imgSetCopy))
-print()
+# print(" Images in the image directory that are NOT in the html: " + str(len(imgSetCopy)))
+# print(str(imgSetCopy))
+# print()
 
 refSetCopy = set(refSet)
 refSetCopy = refSetCopy.difference(imageSet)
