@@ -3,7 +3,7 @@
 #
 
 from html.parser import HTMLParser
-from os import listdir, walk
+from os import listdir, walk, remove
 from os.path import isfile, join
 
 # List of image references from the html pages
@@ -117,9 +117,14 @@ imageSet = set(images)
 # Compare them.
 imgSetCopy = set(imageSet)
 imgSetCopy = imgSetCopy.difference(refSet)
-# print(" Images in the image directory that are NOT in the html: " + str(len(imgSetCopy)))
-# print(str(imgSetCopy))
-# print()
+print(" Images in the image directory that are NOT in the html: " + str(len(imgSetCopy)))
+print(str(imgSetCopy))
+print()
+
+# This will remove them
+# for file in imgSetCopy:
+#     remove(file)
+
 
 refSetCopy = set(refSet)
 refSetCopy = refSetCopy.difference(imageSet)
