@@ -5,11 +5,20 @@
 from html.parser import HTMLParser
 from os import listdir, walk
 from os.path import isfile, join
+import difflib
 
 # List of image references from the html pages
-# list_of_img_refs = []
-list_of_img_refs = {}
+dict_of_img_refs = {}
 
+
+def get_files_from_dir(dirname, type=None):
+    """Get all the files in a directory, optionally limit to a suffix."""
+    images = [filename for filename in listdir(dirname) if isfile(join(dirname, filename))]
+
+    if type is not None:
+        images = [filename for filename in images if filename.endswith(type)]
+
+    return images
 
 def isImage(imgref):
     """ Determine if a string is an image, which in our case means that
@@ -25,25 +34,20 @@ def isImage(imgref):
     return False
 
 
-def get_img_ref_from_attrs(attrs, filename):
-    """ the attributes of an html tag come in a list.  We want
-        either the src or the href. For example, a tag may be:
-        <img src="advertising/elsiecopies1r.jpg" alt="elsie copies" width="200">
-        attrs is now:
-             [('src', 'advertising/elsiecopies1r.jpg'),
-              ('alt', 'elsie copies'),
-              ('width', '200')]
-        And we want the src one.
-        """
-
+def get_img_ref_from_attrs(attrs, filename, line):
+    """The attributes of an html tag come in a list.  We want
+       either the src or the href. For example, a tag may be:
+       <img src="advertising/elsiecopies1r.jpg" alt="elsie copies" width="200">
+       attrs is now:
+            [('src', 'advertising/elsiecopies1r.jpg'),
+             ('alt', 'elsie copies'),
+             ('width', '200')]
+       And we want the src one.
+       """
     for attr in attrs:
-        if attr[0] == 'src':
+        if attr[0] in ['src', 'href']:
             if isImage(attr[1]):
-                list_of_img_refs[attr[1]] = filename
-
-        if attr[0] == 'href':
-            if isImage(attr[1]):
-                list_of_img_refs[attr[1]] = filename
+                dict_of_img_refs[attr[1]] = (filename, line)
 
 
 class CowHTMLParser(HTMLParser):
@@ -53,11 +57,9 @@ class CowHTMLParser(HTMLParser):
         self.filename = filename
 
     def handle_starttag(self, tag, attrs):
-        if tag.startswith("img"):
-            get_img_ref_from_attrs(attrs, filename)
-
-        if tag.startswith("a"):
-            get_img_ref_from_attrs(attrs, filename)
+        line, offset = self.getpos()
+        if tag.startswith("img") or tag.startswith("a"):
+            get_img_ref_from_attrs(attrs, filename, line)
 
     def handle_endtag(self, tag):
         pass
@@ -68,64 +70,54 @@ class CowHTMLParser(HTMLParser):
     def error(self, message):
         pass
 
-
-def get_files_from_dir(dirname, type=None):
-    """ This gets all the files in a directory, and optionally limits to
-        a particular type of file """
-    images = [filename for filename in listdir(dirname) if isfile(join(dirname, filename))]
-
-    if type is not None:
-        images = [filename for filename in images if filename.endswith(type)]
-
-    return images
-
-
+# ----------------------------------------------------------------------
+# Get list of all image references 
+# ----------------------------------------------------------------------
 # Get all the html files.
 htmlfiles = get_files_from_dir(".", "html")
-
 
 # Go through all the html files
 for filename in htmlfiles:
 
-    # Go through the file and get the list of images, will get added to list_of_img_refs.  
-    file = open(filename, "r")
-    line = file.readline()
-    parser = CowHTMLParser(filename)
-    while line:
-        parser.feed(line)
+    # Go through the file and get the list of images, add to dict_of_img_refs
+    with open(filename, "r") as file:
         line = file.readline()
-    file.close()
+        parser = CowHTMLParser(filename)
+        while line:
+            parser.feed(line)
+            line = file.readline()
 
-# Turn the list into a set, which will remove all repeats
-refSet = set(list_of_img_refs.keys())
-# print(" All image refences from HTML files: "+ str(len(refSet)))
-# print(refSet)
-# print()
+# Get all html image reference names as a set
+refSet = set(dict_of_img_refs.keys())
 
-# Go through all the images in all the directories
+# ----------------------------------------------------------------------
+# Get all the images in all the directories
+# ----------------------------------------------------------------------
 images = []
 for root, dirs, files in walk("."):
     for name in files:
         fullname = join(root, name)[2:]
-        # print("file " + join(root, name) + "   " + fullname)
         if isImage(fullname):
             images.append(fullname)
-
 imageSet = set(images)
-# print(" All image from all directories : " + str(len(imageSet)))
 
-# Compare them.
-imgSetCopy = set(imageSet)
-imgSetCopy = imgSetCopy.difference(refSet)
-print(" Images in the image directory that are NOT in the html: " + str(len(imgSetCopy)))
-print(str(imgSetCopy))
-print()
+# ----------------------------------------------------------------------
+# Get diffs
+# ----------------------------------------------------------------------
+# List all images without a refenence in the html
+imgSetWithoutRef = set(imageSet).difference(refSet)
+print(f"Images in the image directory that are NOT in the html: {len(imgSetWithoutRef)}")
+# for imgWithoutRef in imgSetWithoutRef:
+#     print(f"\t{imgWithoutRef}")
+# print()
 
-refSetCopy = set(refSet)
-refSetAsList = list(refSetCopy.difference(imageSet))
-refSetAsList.sort()
-print(" Images in the html that are NOT in the image directory: " + str(len(refSetAsList)))
-print(str(refSetAsList))
-for img in refSetAsList:
-    print(f"\t{img:20}  from {list_of_img_refs[img]}")
-print()
+# List all references in html, not in image directories
+refSetWithoutImage = sorted(list(set(refSet).difference(imageSet)))
+print(f"Images in the html that are NOT in the image directory: {len(refSetWithoutImage)}")
+for img in refSetWithoutImage:
+
+    # See if we can find a file with the right suffix
+    matches = difflib.get_close_matches(img, imageSet)
+    best_match = matches[0] if matches else None
+    
+    print(f"\t{img:20}  from {dict_of_img_refs[img][0]}:{dict_of_img_refs[img][1]}   Try {best_match}")
